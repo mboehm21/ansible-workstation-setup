@@ -1,0 +1,27 @@
+---
+
+zsh_users:
+  - mboehm21
+  - root
+
+ohmyzsh_theme: obraun
+ohmyzsh_plugins:
+  - git
+  - timer
+  - colorize
+  - nmap
+
+ohmyzsh_plugin_vars:
+  TIMER_FORMAT: '[%d]'
+  TIMER_PRECISION: 2
+
+zsh_alias:
+  ll: ls -lah
+  noproxy: export http_proxy="" && export https_proxy=""
+  cat: ccat
+
+zsh_unsetopt:
+  - share_history
+
+zsh_bindkey:
+  - '"^[OM" "^M"'

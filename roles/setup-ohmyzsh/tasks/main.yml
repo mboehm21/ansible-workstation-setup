@@ -1,0 +1,47 @@
+---
+
+- name: Ensure latest versions of zsh and git are present
+  become: yes
+  apt:
+    name:
+      - zsh
+      - git
+    state: latest
+    update_cache: yes
+
+- name: Clone latest version of ohmyzsh repository
+  become: yes
+  become_user: "{{ item }}"
+  ansible.builtin.git:
+    repo: https://github.com/ohmyzsh/ohmyzsh.git
+    dest: $HOME/.oh-my-zsh/
+    depth: 1
+    force: yes
+  loop: "{{ zsh_users }}"
+
+- name: Ensure permissions on .oh-my-zsh folder are correct
+  become: yes
+  become_user: "{{ item }}"
+  ansible.builtin.file:
+    path: "$HOME/.oh-my-zsh/"
+    recurse: yes
+    mode: 0700
+  loop: "{{ zsh_users }}"
+
+- name: Deploy .zshrc configuration
+  become: yes
+  become_user: "{{ item }}"
+  ansible.builtin.template:
+    src: zshrc.j2
+    dest: "$HOME/.zshrc" 
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: 0600
+  loop: "{{ zsh_users }}"
+
+- name: Ensure zsh is the user's default shell
+  become: yes
+  user:
+    name: "{{ item }}"
+    shell: /bin/zsh
+  loop: "{{ zsh_users }}"
